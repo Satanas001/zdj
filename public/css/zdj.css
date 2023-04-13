@@ -1,0 +1,76 @@
+@import "bootstrap.css" ;
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow:1 ;
+}
+
+a {
+    text-decoration: none;
+}
+
+.image-12 {
+    max-width: 12px;
+    max-height: 12px;
+}
+
+.image-16 {
+    max-width: 16px;
+    max-height: 16px;
+}
+
+.image-24 {
+    max-width: 24px;
+    max-height: 24px;
+}
+
+.image-32 {
+    max-width: 32px;
+    max-height: 32px;
+}
+
+.image-48 {
+    max-width: 48px;
+    max-height: 48px;
+}
+
+.image-64 {
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.image-128 {
+    max-width: 128px;
+    max-height: 128px;
+}
+
+.image-256 {
+    max-width: 256px;
+    max-height: 256px;
+}
+
+.image-512 {
+    max-width: 512px;
+    max-height: 512px;
+}
+
+.lettrine::first-letter {
+    font-size: 1.5rem;
+    font-weight:bold ;
+    text-shadow: 1px 1px 2px rgba(0,0,127,0.25);
+    color: var(--bs-primary) ;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-shadow: 1px 1px 2px rgba(0,0,127,0.25);
+    color: var(--bs-primary) ;
+}
+
+.required {
+    background-color: cornsilk !important;
+}
