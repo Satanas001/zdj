@@ -192,7 +192,7 @@ class Form
         // On ajoute les attributs éventuels
         $this->formCode .= $attributes ? $this->addAttributes($attributes) : '' ;
         
-        $this->formCode .= '>' ;
+        $this->formCode .= ' enctype="multipart/form-data">' ;
 
         $this->formCode .= '<div class="card border shadow-sm">'
             . '<div class="card-body">' ;

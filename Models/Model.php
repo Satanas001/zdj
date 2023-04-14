@@ -45,7 +45,8 @@ class Model extends Db
 
     public function delete(int $id)
     {
-        return $this->sqlQuery('delete from '.$this->table.' where id = ?', [$id]) ;
+        $this->sqlQuery('delete from '.$this->table.' where id = ?', [$id]) ;
+        return $this->sqlQuery('repair table '.$this->table) ;
     }
 
     public function find(int $id)
@@ -125,6 +126,12 @@ class Model extends Db
         }
 
         return $this ;
+    }
+
+    public function lastId()
+    {
+        $this->db = Db::getInstance() ;
+        return $this->db->lastInsertId() ;
     }
 
     protected function sqlQuery(string $sql, array $attributs = null)

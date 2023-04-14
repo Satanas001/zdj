@@ -82,12 +82,118 @@ function numberFormat(mixed $number, int $decimal = 0, string $unity = '') : str
 }
 
 /**
+ * Resize an image to a new size
+ *
+ * @param string $image The complete path of the image
+ * @param integer $xMax Maximum width of the new image
+ * @param integer $yMax Maximum height of the new image
+ * @param boolean $strict   if set to true, the image will have the size of xMAx x Ymax
+ * @return void
+ */
+function resizeImage(string $image, int $xMax = 300, int $yMax = 300, bool $strict = false) {
+    $image = $_SERVER['DOCUMENT_ROOT'].$image ;
+    
+    if (file_exists($image)) {
+        list($width, $height, $type) = getimagesize($image);
+
+        switch ($type) {
+            case 1:
+                $img = imagecreatefromgif($image);
+                break;
+            case 2:
+                $img = imagecreatefromjpeg($image);
+                break;
+            case 3:
+                $img = imagecreatefrompng($image);
+                break;
+        }
+
+        if ($img) {
+            // on vérifie que l'image source n'est pas plus petite que l'image destination
+            if ($width > $xMax || $height > $yMax) {
+                $ratioX = $xMax / $width;
+                $ratioY = $yMax / $height;
+
+                if ($ratioX <= $ratioY) {
+                    $ratio = $ratioX;
+                } else {
+                    $ratio = $ratioY;
+                }
+            } 
+            else {
+                $ratio = 1;
+            }
+
+            $destWidth = round($width * $ratio);
+            $destHeight = round($height * $ratio);
+
+            $destImage = imagecreatetruecolor($destWidth, $destHeight);
+            imagealphablending($destImage, false);
+            imagesavealpha($destImage, true);
+
+            if (imagecopyresampled($destImage, $img, 0, 0, 0, 0, $destWidth, $destHeight, $width, $height)) {
+                switch ($type) {
+                    case 1:
+                        imagegif($destImage, $image);
+                        break;
+                    case 2:
+                        imagejpeg($destImage, $image, 100);
+                        break;
+                    case 3:
+                        imagepng($destImage, $image, 0);
+                        break;
+                }
+            }
+
+            imagedestroy($destImage);
+
+            if ($strict) {
+                switch ($type) {
+                    case 1:
+                        $img1 = imagecreatefromgif($image);
+                        break;
+                    case 2:
+                        $img1 = imagecreatefromjpeg($image);
+                        break;
+                    case 3:
+                        $img1 = imagecreatefrompng($image);
+                        break;
+                }
+
+                $img2 = imagecreatetruecolor($xMax, $yMax);
+                $blanc = imagecolorallocate($img2, 255, 255, 255);
+                imagealphablending($destImage, false);
+                imagesavealpha($destImage, true);
+                imagefill($img2, 1, 1, $blanc);
+                $x = round(($xMax - $destWidth) / 2, 0) ;
+                $y = round(($yMax - $destHeight) / 2, 0) ;
+                imagecopy($img2, $img1, $x, $y, 0, 0, $destWidth, $destHeight);
+
+                switch ($type) {
+                    case 1:
+                        imagegif($img2, $image);
+                        break;
+                    case 2:
+                        imagejpeg($img2, $image, 100);
+                        break;
+                    case 3:
+                        imagepng($img2, $image, 0);
+                        break;
+                }
+            }
+        }
+
+        imagedestroy($img);
+    }
+}
+
+/**
  * Return a string representation to be used in URLs
  *
  * @param string $title Represents the title to be used in URLs
  * @return string
  */
-function urlTitle(string $title) : string
+function urlTitle(string $title, string $spaceReplacer = '-') : string
 {
     $title = preg_replace('#Ç#', 'C', $title);
     $title = preg_replace('#ç#', 'c', $title);
@@ -106,7 +212,7 @@ function urlTitle(string $title) : string
 
     $title = mb_convert_case($title, MB_CASE_LOWER, 'UTF-8');
 
-    $title = preg_replace('`[^a-z0-9]+`', '-', $title);
+    $title = preg_replace('`[^a-z0-9]+`', $spaceReplacer, $title);
 
     return trim($title, '-');
 }

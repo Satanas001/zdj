@@ -16,7 +16,7 @@
             </div>
             <div class="modal-footer bg-danger bg-opacity-10">
                 <button type="button" class="btn btn-success" data-bs-dismiss="modal"><i class="fa-solid fa-times me-2 fa-lg"></i>Annuler</button>
-                <a class="btn btn-danger" href="/authors/delete/<?=$modalDelete['code']; ?>"><i class="fa-regular fa-trash-alt me-2 fa-lg"></i>Supprimer</a>
+                <a class="btn btn-danger" href="/<?=$modalDelete['model'] ; ?>/delete/<?=$modalDelete['code'] ; ?>"><i class="fa-regular fa-trash-alt me-2 fa-lg"></i>Supprimer</a>
             </div>
         </div>
     </div>

@@ -25,7 +25,7 @@ class AuthorsController extends Controller
                     $author->create() ;
                     $_SESSION['flashes'][] = ['message' => 'Auteur enregistré.', 'style' => 'success'] ;
 
-                    header('Location: /authors/filter/'.mb_strtoupper($lastName[0])) ;
+                    header('Location: /authors/view/'.$author->lastId()) ;
                     exit ;
                 }
                 else {
@@ -202,29 +202,34 @@ class AuthorsController extends Controller
         if (isset($_SESSION['user']) && in_array('ROLE_ADMIN', $_SESSION['user']['roles'])) {
             $authorModel = new Author() ;
             $author = $authorModel->find($id) ;
-            $games = $authorModel->findGames($id) ;
 
-            $toolBar = new ToolBarBuilder() ;
-            $toolBar->startToolBar(['class' => 'mt-2 mb-3'])
-                ->addButton('list', 'Retour à la liste', ['href' => '/authors/filter/'.$author->last_name[0]])
-                ->addButton('edit', 'Modifier l\'auteur', ['href' => '/authors/edit/'.$author->id]) ;
+            if ($author) {
+                $games = $authorModel->findGames($id) ;
 
-            if (!count($games)) {
-                $toolBar->addButton('delete', 'Supprimer l\'auteur', ['data-bs-toggle' => 'modal',  'data-bs-target' => '#deleteModal']) ;
-            }
+                $toolBar = new ToolBarBuilder() ;
+                $toolBar->startToolBar(['class' => 'mt-2 mb-3'])
+                    ->addButton('list', 'Retour à la liste', ['href' => '/authors/filter/'.$author->last_name[0]])
+                    ->addButton('edit', 'Modifier l\'auteur', ['href' => '/authors/edit/'.$author->id]) ;
 
-            $toolBar->endToolBar() ;
-            
-            $this->render('admin/authors/index', [
-                'author' => $author, 
-                'games' => $games,
-                'toolBar' => $toolBar->create(),
-                'modalDelete' => [
-                    'code' => $id, 
-                    'label' => $author->first_name.$author->last_name, 
+                if (!count($games)) {
+                    $toolBar->addButton('delete', 'Supprimer l\'auteur', ['data-bs-toggle' => 'modal',  'data-bs-target' => '#deleteModal']) ;
+                }
+
+                $toolBar->endToolBar() ;
+                
+                $this->render('admin/authors/index', [
+                    'author' => $author, 
+                    'games' => $games,
+                    'toolBar' => $toolBar->create(),
+                    'modalDelete' => [
+                        'model' => 'authors',
+                        'code' => $id, 
+                        'label' => $author->first_name.$author->last_name, 
                     ]
                 ],
-            'admin') ;
+                'admin') ;
+            }
+            else header('Location: /authors') ;
         }
         else header('Location: /') ;
     }

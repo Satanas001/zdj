@@ -39,3 +39,5 @@
         </div>
     </section>
 </section>
+<?php
+    include 'components/modalDelete.php' ;
