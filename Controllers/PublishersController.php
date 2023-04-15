@@ -81,6 +81,7 @@ class PublishersController extends Controller
             }
 
             $publisherModel->delete($id) ;
+            unlink($_SERVER['DOCUMENT_ROOT'].'/assets/images/publishers/'.$publisher->image) ;
 
             header('Location: /publishers/filter/'.mb_strtoupper($publisher->name[0])) ;
         }
