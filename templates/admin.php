@@ -31,8 +31,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/publishers">Editeurs</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item me-2">
                             <a class="nav-link" href="/admgames">Jeux</a>
+                        </li>
+                        <li class="nav-item border-start border-info">
+                            <a class="nav-link ms-2" href="/anomalies">Anomalies</a>
                         </li>
                     </ul>
                     <div>

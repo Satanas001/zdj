@@ -188,6 +188,35 @@ function resizeImage(string $image, int $xMax = 300, int $yMax = 300, bool $stri
 }
 
 /**
+ * Split the title of game, book, film, etc.
+ *
+ * @param string $title Full title of the opus
+ * @return array    return an associative array['article' => string article, 'title' => string title]
+ */
+function splitTitle(string $title):array {
+    $article = '' ;
+
+    if (substr(strtolower($title), 0, 2) == "l'") {
+        $article = substr($title, 0, 2) ;
+        $title = substr($title, 2) ;
+    }
+    elseif (substr(strtolower($title), 0, 3) == 'le ' || substr(strtolower($title), 0, 3) == 'la ') {
+        $article = substr($title, 0, 3) ;
+        $title = substr($title, 3) ;
+    }
+    elseif (substr(strtolower($title), 0, 4) == 'les ') {
+        $article = substr($title, 0, 4) ;
+        $title = substr($title, 4) ;
+    }
+    elseif (substr(strtolower($title), 0, 4) == 'the ') {
+        $article = substr($title, 0, 4) ;
+        $title = substr($title, 4) ;
+    }
+
+    return ['article' => $article, 'title' => $title] ;
+}
+
+/**
  * Return a string representation to be used in URLs
  *
  * @param string $title Represents the title to be used in URLs

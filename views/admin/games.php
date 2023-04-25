@@ -26,7 +26,7 @@
                             <th class="text-center"><i class="fa-solid fa-birthday-cake" title="A partir de"></i></th>
                             <th class="text-center"><i class="fa-solid fa-stopwatch" title="Durée"></i></th>
                             <th class="text-center"><i class="fa-solid fa-music" title="Melodice"></i></th>
-                            <th></th>
+                            <th class="text-center"><i class="fa-solid fa-check" title="Valide"></i></th>
                         </tr>
                     </thead>
                     <tbody>

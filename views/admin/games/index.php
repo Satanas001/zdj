@@ -12,6 +12,15 @@
             <span class="text-danger h3 me-4 fw-normal" title="A partir de"><i class="fa-solid fa-birthday-cake me-1"></i><?= $game->age; ?>+</span>
             <span class="text-warning h3 me-4 fw-normal" title="Durée"><i class="fa-solid fa-stopwatch me-1"></i><?= $game->duration_min, $game->duration_min != $game->duration_max ? ' - ' . $game->duration_max : ''; ?>&rsquo;</span>
             <?= $game->melodice ? '<a href="'.$game->melodice.'" target="_blank" class="" ><span class="h3 fw-normal" title="Melodice"><i class="border border-primary p-2 rounded-circle shadow-sm bg-info bg-opacity-25 fa-solid fa-music"></i></a>' : '' ;?>
+            <?php if (!$game->active) : ?>
+                <span class="float-end ms-3">
+                    <span class="py-1 px-4 bg-danger bg-opacity-25 text-danger h5 border border-danger rounded-4 shadow-sm"><i class="fa-solid fa-exclamation-triangle me-3"></i>Brouillon</span>
+                </span>
+            <?php else : ?>
+                <span class="float-end ms-3">
+                    <span class="py-1 px-4 bg-success bg-opacity-25 text-success h5 border border-success rounded-4 shadow-sm"><i class="fa-solid fa-check me-3"></i>En ligne</span>
+                </span>
+            <?php endif; ?>
         </div>
         <div class="mb-2">
             <?php if ($authors) : ?>

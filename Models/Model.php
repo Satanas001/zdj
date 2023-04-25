@@ -18,6 +18,31 @@ class Model extends Db
         return $query->fetchColumn() ;
     }
 
+    public function countBy(array $criteria) 
+    {
+        $sort = '' ;
+        
+        if (!empty($orderBy)) {
+            $sort = implode(', ', $orderBy) ;
+        }
+
+        $fields = [] ;
+        $values = [] ;
+
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+        }
+        
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+
+        // On exécute la requête
+        $query = 'select count(*) nb from '.$this->table.' where '.$fieldList ;
+        return $this->sqlQuery($query, $values)->fetchColumn() ;
+    }
+
     public function create()
     {
         $fields = [] ;
