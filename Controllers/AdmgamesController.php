@@ -117,11 +117,14 @@ class AdmgamesController extends GamesController
             $gameModel = new Game();
             $game = $gameModel->find($id);
 
+            $authors = $gameModel->findAuthorsBy($id, ['is_author' => 1]);
+            $availableAuthors = $gameModel->findAvailableAuthorsBy(['game_id' => $id, 'is_author' => 1]) ;
+            $illustrators = $gameModel->findAuthorsBy($id, ['is_illustrator' => 1]);
+            $availableIllustrators = $gameModel->findAvailableAuthorsBy(['game_id' => $id, 'is_illustrator' => 1]) ;
+
             if (!Form::cancel($_POST)) {
                 if (Form::validate($_POST, ['title', 'playersMin', 'age', 'durationMin'])) {
                     $title = splitTitle(strip_tags($_POST['title']));
-
-                    // $game = new Game() ;
 
                     $minPlayer = (int)$_POST['playersMin'];
                     $maxPlayer = $_POST['playersMax'] <= $minPlayer ? $minPlayer : (int)$_POST['playersMax'];
@@ -132,7 +135,6 @@ class AdmgamesController extends GamesController
                     $age = (int)$_POST['age'];
 
                     $prefix = $_POST['prefix'] ? $_POST['prefix'] : urltitle($title['title']) ;
-
 
                     if (!empty($_FILES['imgfile']['name'])) {
                         $extension = strrchr($_FILES['imgfile']['name'],'.') ;
@@ -165,16 +167,12 @@ class AdmgamesController extends GamesController
                         $gameModel->hydrate(['image' => $image]) ;
                     }
 
-                    // var_dump($_POST, $gameModel);
-                    // // var_dump($game) ;
-                    // $game->create() ;
-
                     $gameModel->update() ;
 
                     $_SESSION['flashes'][] = ['message' => 'Jeu modifié.', 'style' => 'success'] ;
 
                     header('Location: /admgames/view/'.$id) ;
-                    exit;
+                    exit ;
                 } else {
                     if ($_POST) {
                         $_SESSION['flashes'][] = ['message' => 'Les champs jaunes sont obligatoires', 'style' => 'danger'];
@@ -250,6 +248,10 @@ class AdmgamesController extends GamesController
             $this->render('admin/games/edit', [
                 'form' => $form->create(),
                 'game' => $game,
+                'authors' => $authors,
+                'illustrators' => $illustrators,
+                'availableAuthors' => $availableAuthors,
+                'availableIllustrators' => $availableIllustrators,
             ], 'admin');
         } else header('Location: /');
     }

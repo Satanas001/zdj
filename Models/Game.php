@@ -23,6 +23,85 @@ class Game extends Model
         $this->table = 'games' ;
     }
 
+    public function addAuthorBy(array $criteria)
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+            $insertFields[] = $field ;
+            $interrogations[] = '?' ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+        $insertFieldsList = implode(', ', $insertFields) ;
+        $interrogationList = implode(', ', $interrogations) ;
+
+        $nb = $this->sqlQuery('select is_author + is_illustrator from game_authors where '.$fieldList, $values)->fetchColumn() ;
+
+        if ($nb) {
+            if (in_array('is_author', $criteria)) {
+                $this->sqlQuery('update game_authors set is_author = 1 where '.$fieldList, $values) ;
+            }
+            else {
+                $this->sqlQuery('update game_authors set is_illustrator = 1 where '.$fieldList, $values) ;
+            }
+        }
+        else {
+            $this->sqlQuery('insert into game_authors ('.$insertFieldsList.') values ('.$interrogationList.')', $values) ;
+        }
+    }
+
+    public function deleteAuthorBy(array $criteria)
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+
+        $nb = $this->sqlQuery('select is_author + is_illustrator from game_authors where '.$fieldList, $values)->fetchColumn() ;
+
+        if ($nb > 1) {
+            if (in_array('is_author', $criteria)) {
+                $this->sqlQuery('update game_authors set is_author = 0 where '.$fieldList, $values) ;
+            }
+            else {
+                $this->sqlQuery('update game_authors set is_illustrator = 0 where '.$fieldList, $values) ;
+            }
+        }
+        else {
+            $this->sqlQuery('delete from game_authors where '.$fieldList, $values) ;
+            $this->sqlQuery('repair table game_authors') ;
+        }
+    }
+
+    /**
+     * Returns the list of authors who are not authors of this game
+     *
+     * @param array $criteria
+     * @return void
+     */
+    public function findAvailableAuthorsBy(array $criteria):array
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+
+        $query = 'select * from authors where id not in (select distinct author_id from game_authors where '.$fieldList.') order by last_name, first_name' ;
+
+        return $this->sqlQuery($query, $values)->fetchAll() ;
+    }
+
     /**
      * Finds the game authors of the game
      *
