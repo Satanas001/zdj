@@ -33,7 +33,7 @@
                 <?php include 'edit_authors.php'; ?>
             </div>
             <div class="tab-pane fade pt-2" id="publishers" role="tabpanel" aria-labelledby="publishersTab">
-                <!-- <?php include 'edit_infos.php'; ?> -->
+                <?php include 'edit_publishers.php'; ?>
             </div>
             <div class="tab-pane fade pt-2" id="contents" role="tabpanel" aria-labelledby="contentsTab">
 

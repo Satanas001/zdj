@@ -53,6 +53,22 @@ class Game extends Model
         }
     }
 
+    public function addPublisherBy(array $criteria)
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field ;
+            $values[] = $value ;
+            $interrogations[] = '?' ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(', ', $fields) ;
+        $interrogationList = implode(', ', $interrogations) ;
+
+        $this->sqlQuery('insert into game_publishers ('.$fieldList.') values ('.$interrogationList.')', $values) ;
+    }
+
     public function deleteAuthorBy(array $criteria)
     {
         // On boucle pour éclater le tableau
@@ -80,13 +96,7 @@ class Game extends Model
         }
     }
 
-    /**
-     * Returns the list of authors who are not authors of this game
-     *
-     * @param array $criteria
-     * @return void
-     */
-    public function findAvailableAuthorsBy(array $criteria):array
+    public function deletePublisherBy(array $criteria)
     {
         // On boucle pour éclater le tableau
         foreach ($criteria as $field => $value) {
@@ -96,11 +106,11 @@ class Game extends Model
 
         // On transforme le tableau fields en une chaine de caractères
         $fieldList = implode(' and ', $fields) ;
-
-        $query = 'select * from authors where id not in (select distinct author_id from game_authors where '.$fieldList.') order by last_name, first_name' ;
-
-        return $this->sqlQuery($query, $values)->fetchAll() ;
+        
+        $this->sqlQuery('delete from game_publishers where '.$fieldList, $values) ;
+        $this->sqlQuery('repair table game_publishers') ;
     }
+
 
     /**
      * Finds the game authors of the game
@@ -124,6 +134,50 @@ class Game extends Model
 
         $query = 'select authors.* from game_authors join authors on game_authors.author_id = authors.id where ' . $fieldList . ' order by last_name, first_name' ;
         
+        return $this->sqlQuery($query, $values)->fetchAll() ;
+    }
+
+    /**
+     * Returns the list of authors who are not authors of this game
+     *
+     * @param array $criteria
+     * @return void
+     */
+    public function findAvailableAuthorsBy(array $criteria):array
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+
+        $query = 'select * from authors where id not in (select distinct author_id from game_authors where '.$fieldList.') order by last_name, first_name' ;
+
+        return $this->sqlQuery($query, $values)->fetchAll() ;
+    }
+
+    /**
+     * Returns the list of publishers which are not publisher of this game
+     *
+     * @param array $criteria
+     * @return void
+     */
+    public function findAvailablePublishersBy(array $criteria):array
+    {
+        // On boucle pour éclater le tableau
+        foreach ($criteria as $field => $value) {
+            $fields[] = $field . ' = ?' ;
+            $values[] = $value ;
+        }
+
+        // On transforme le tableau fields en une chaine de caractères
+        $fieldList = implode(' and ', $fields) ;
+
+        $query = 'select * from publishers where id not in (select distinct publisher_id from game_publishers where '.$fieldList.') order by name' ;
+
         return $this->sqlQuery($query, $values)->fetchAll() ;
     }
 

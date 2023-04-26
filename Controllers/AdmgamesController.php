@@ -121,6 +121,8 @@ class AdmgamesController extends GamesController
             $availableAuthors = $gameModel->findAvailableAuthorsBy(['game_id' => $id, 'is_author' => 1]) ;
             $illustrators = $gameModel->findAuthorsBy($id, ['is_illustrator' => 1]);
             $availableIllustrators = $gameModel->findAvailableAuthorsBy(['game_id' => $id, 'is_illustrator' => 1]) ;
+            $publishers = $gameModel->findPublishers($id) ;
+            $availablePublishers = $gameModel->findAvailablePublishersBy(['game_id' => $id]) ;
 
             if (!Form::cancel($_POST)) {
                 if (Form::validate($_POST, ['title', 'playersMin', 'age', 'durationMin'])) {
@@ -252,6 +254,8 @@ class AdmgamesController extends GamesController
                 'illustrators' => $illustrators,
                 'availableAuthors' => $availableAuthors,
                 'availableIllustrators' => $availableIllustrators,
+                'publishers' => $publishers,
+                'availablePublishers' => $availablePublishers,
             ], 'admin');
         } else header('Location: /');
     }
